@@ -1,10 +1,11 @@
 import './App.css'
+import UploadScreen from './components/UploadScreen'
 
 function App() {
 
   return (
     <>
-      <h1>Hello world</h1>
+      <UploadScreen />
     </>
   )
 }
