@@ -1,1 +1,33 @@
 @import "tailwindcss";
+
+@font-face {
+  font-family: "NeutralSans";
+  src: url("./assets/fonts/NeutralSans-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "NeutralSans";
+  src: url("./assets/fonts/NeutralSans-Meidum.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "NeutralSans";
+  src: url("./assets/fonts/MyFont-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "NeutralSans";
+  src: url("./assets/fonts/MyFont-Black.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+}
+
+@theme {
+  --font-sans: "NeutralSans", system-ui, sans-serif;
+}
