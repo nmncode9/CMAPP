@@ -1,13 +1,20 @@
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import './App.css'
 import UploadScreen from './components/UploadScreen'
+import ViewContacts from "./components/ViewContacts";
 
-function App() {
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <UploadScreen />
+  },
+  {
+    path: "/contacts",
+    element: <ViewContacts />
+  }
+]);
 
-  return (
-    <>
-      <UploadScreen />
-    </>
-  )
+export default function App() {
+  return <RouterProvider router={router} />
 }
 
-export default App

@@ -1,6 +1,18 @@
-
+import { useNavigate } from "react-router-dom";
+import { useContactsStore } from "../stores/contactsStore"
 
 export default function UploadButton() {
+
+  const addRawFiles = useContactsStore(state => state.addRawFiles);
+  const navigate = useNavigate();
+
+  const handleFiles = (e) => {
+    const files = e.target.files;
+    if (!files || files.length > 0) {
+      addRawFiles(files);
+      navigate("/contacts")
+    }
+  }
 
   return (
     <form onSubmit={(e) => e.preventDefault()} className="text-center max-w-[1100px] mx-auto">
@@ -8,7 +20,7 @@ export default function UploadButton() {
         id="fileInput"
         type="file"
         multiple
-        // onChange={handleFileUpload}
+        onChange={handleFiles}
         className="hidden"
       />
       <label htmlFor="fileInput" className="cursor-pointer mb-5 sm:mb-8 inline-flex items-center mx-auto justify-center gap-2 px-8 py-2 sm:px-16 sm:py-4 bg-primary text-white font-[700] rounded-md text-xl sm:text-2xl hover:bg-secondary transition">
