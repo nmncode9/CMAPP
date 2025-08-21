@@ -21,9 +21,10 @@ import {
 import { columns } from "@/components/Columns";
 import { useContactsStore } from "@/stores/contactsStore";
 import { Button } from "./ui/button";
+import PaginationRange from "./PaginationRange";
 
 export default function DataTable() {
-  // pull rows directly from store
+  
   const rows = useContactsStore((state) => state.contacts) || [];
 
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 20 });
@@ -34,7 +35,7 @@ export default function DataTable() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      pagination, // default 20 rows
+      pagination,
     },
     onPaginationChange: setPagination,
   });
@@ -79,8 +80,8 @@ export default function DataTable() {
           )}
         </TableBody>
       </Table>
-      <div className="inline-flex justify-between">
-        <div className="flex items-center space-x-2 py-4">
+      <div className="flex justify-between">
+        <div className="flex items-baseline space-x-2 py-4">
           <span>Rows per page:</span>
           <select
             value={pagination.pageSize}
@@ -94,7 +95,13 @@ export default function DataTable() {
             ))}
           </select>
         </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex items-baseline justify-end space-x-2 py-4">
+          <PaginationRange
+            pageIndex={pagination.pageIndex}
+            pageSize={pagination.pageSize}
+            total={rows.length}
+            className="mr-1"
+          />
           <Button
             variant="outline"
             size="sm"
