@@ -3,6 +3,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 const columnHelper = createColumnHelper();
 
+// Generic sorting function for all applicable headers
+function stringWithEmptyLast(rowA, rowB, columnId) {
+  const valA = (rowA.getValue(columnId) || "").toString().trim();
+  const valB = (rowB.getValue(columnId) || "").toString().trim();
+
+  if (!valA && valB) return 1;   // empty goes last
+  if (valA && !valB) return -1;  // non-empty first
+  return valA.localeCompare(valB); // alphabetically
+}
+
 export const columns = [
   // --- Select All / Row Selection Column ---
   columnHelper.display({
@@ -32,7 +42,7 @@ export const columns = [
         .map((key) => row[key])
         .filter(Boolean)
         .join(" "),
-    { id: "name", header: "Name" }
+    { id: "name", header: "Name", enableSorting: true, sortingFn: stringWithEmptyLast, }
   ),
 
   // --- Phone column: show first number ---
@@ -50,18 +60,22 @@ export const columns = [
       const emails = row.email ? Object.values(row.email).filter(Boolean) : [];
       return emails[0] || "";
     },
-    { id: "email", header: "Email" }
+    { id: "email",
+      header: "Email",
+      enableSorting: true,
+      sortingFn: stringWithEmptyLast,
+    }
   ),
 
   // --- Address column: concatenate all Address 1 - ... fields ---
   columnHelper.accessor(
     (row) =>
       Object.keys(row)
-        .filter((key) => key.toLowerCase().startsWith("address 1 -"))
+        .filter((key) => key.trim().toLowerCase().startsWith("address 1 -"))
         .map((key) => row[key])
         .filter(Boolean)
         .join(", "),
-    { id: "address", header: "Address" }
+    { id: "address", header: "Address", enableSorting: true, sortingFn: stringWithEmptyLast,}
   ),
 
   // --- Company column: concatenate all fields containing "organization" or "company" ---
@@ -76,7 +90,7 @@ export const columns = [
         .map((key) => row[key])
         .filter(Boolean)
         .join(" "),
-    { id: "company", header: "Company" }
+    { id: "company", header: "Company", enableSorting: true, sortingFn: stringWithEmptyLast, }
   ),
 
   // --- Actions column ---
