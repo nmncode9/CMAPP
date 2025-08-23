@@ -21,8 +21,7 @@ import {
 
 import { columns } from "@/components/Columns";
 import { useContactsStore } from "@/stores/contactsStore";
-import { Button } from "./ui/button";
-import PaginationRange from "./PaginationRange";
+import PaginationControls from "./PaginationControls";
 
 export default function DataTable() {
   
@@ -110,70 +109,7 @@ export default function DataTable() {
           )}
         </TableBody>
       </Table>
-      <div className="flex justify-between">
-        <div className="flex items-baseline space-x-2 py-4">
-          <span>Rows per page:</span>
-          <select
-            value={pagination.pageSize}
-            onChange={(e) => {
-              const value = e.target.value;
-              setPagination({
-                ...pagination,
-                pageSize: value === "all" ? rows.length : Number(value),
-                pageIndex: 0,
-              });
-            }}
-            className="border rounded p-1"
-          >
-            {[20, 50, 100].map((size) => (
-              <option key={size} value={size}>
-                {size}
-              </option>
-            ))}
-            <option value="all">Show all</option>
-          </select>
-        </div>
-        <div className="flex items-baseline justify-end space-x-2 py-4">
-          <PaginationRange
-            pageIndex={pagination.pageIndex}
-            pageSize={pagination.pageSize}
-            total={rows.length}
-            className="mr-1"
-          />
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.firstPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            First
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.lastPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Last
-          </Button>
-        </div>
-      </div>
+      <PaginationControls table={table} totalRows={rows.length}/>
     </div>
   );
 }
