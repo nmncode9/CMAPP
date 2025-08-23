@@ -67,15 +67,15 @@ export const columns = [
     }
   ),
 
-  // --- Address column: concatenate all Address 1 - ... fields ---
+  // --- Address column: all Address 1 - ... fields already concatenated in the store
   columnHelper.accessor(
-    (row) =>
-      Object.keys(row)
-        .filter((key) => key.trim().toLowerCase().startsWith("address 1 -"))
-        .map((key) => row[key])
-        .filter(Boolean)
-        .join(", "),
-    { id: "address", header: "Address", enableSorting: true, sortingFn: stringWithEmptyLast,}
+    (row) => row.address || "",
+    {
+      id: "address",
+      header: "Address",
+      enableSorting: true,
+      sortingFn: stringWithEmptyLast,
+    }
   ),
 
   // --- Company column: concatenate all fields containing "organization" or "company" ---
