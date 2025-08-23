@@ -115,7 +115,14 @@ export default function DataTable() {
           <span>Rows per page:</span>
           <select
             value={pagination.pageSize}
-            onChange={(e) => setPagination({ ...pagination, pageSize: Number(e.target.value), pageIndex: 0 })}
+            onChange={(e) => {
+              const value = e.target.value;
+              setPagination({
+                ...pagination,
+                pageSize: value === "all" ? rows.length : Number(value),
+                pageIndex: 0,
+              });
+            }}
             className="border rounded p-1"
           >
             {[20, 50, 100].map((size) => (
@@ -123,6 +130,7 @@ export default function DataTable() {
                 {size}
               </option>
             ))}
+            <option value="all">Show all</option>
           </select>
         </div>
         <div className="flex items-baseline justify-end space-x-2 py-4">
