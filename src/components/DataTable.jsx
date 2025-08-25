@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 import {
   flexRender,
@@ -23,15 +23,58 @@ import { columns } from "@/components/Columns";
 import { useContactsStore } from "@/stores/contactsStore";
 import PaginationControls from "./PaginationControls";
 
-export default function DataTable() {
+export default function DataTable({filters}) {
   
   const rows = useContactsStore((state) => state.contacts) || [];
+
+  // --- helpers for matching ---
+  const toText = (v) => (v ?? "").toString().toLowerCase().trim();
+  const digitsOnly = (v) => (v ?? "").toString().replace(/\D+/g, "");
+
+  const matchName = (row, q) =>
+    !q || toText(row.name).includes(toText(q));
+
+  const matchCompany = (row, q) =>
+    !q || toText(row.company).includes(toText(q));
+
+  const matchEmail = (row, q) => {
+    if (!q) return true;
+    const needle = toText(q);
+    const values = Object.values(row.email || {});
+    return values.some((val) => toText(val).includes(needle));
+  };
+
+  const matchPhone = (row, q) => {
+    if (!q) return true;
+    const needle = digitsOnly(q);
+    if (!needle) return true; // if user typed non-digits only, don’t block results
+    const values = Object.values(row.phone || {});
+    return values.some((val) => digitsOnly(val).includes(needle));
+  };
+
+  // “type” means the label/key inside phone, e.g. mobile/work/home
+  const matchType = (row, q) => {
+    if (!q) return true;
+    const needle = toText(q);
+    const labels = Object.keys(row.phone || {});
+    return labels.some((label) => toText(label).includes(needle));
+  };
+
+  const filteredRows = useMemo(() => {
+    return rows.filter((row) =>
+      matchName(row, filters?.name) &&
+      matchEmail(row, filters?.email) &&
+      matchPhone(row, filters?.phone) &&
+      matchCompany(row, filters?.company) &&
+      matchType(row, filters?.type)
+    );
+  }, [rows, filters]);
 
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 20 });
   const [sorting, setSorting] = useState([]);
 
   const table = useReactTable({
-    data: rows,
+    data: filteredRows,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),

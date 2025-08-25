@@ -1,4 +1,3 @@
-// stores/contactsStore.js
 import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
 import * as XLSX from "xlsx";
@@ -68,20 +67,16 @@ export const useContactsStore = create((set) => ({
             }
 
             // --- Phones (normalize labels, keep fallback) ---
-            for (const key of Object.keys(row)) {
-              const lower = key.toLowerCase();
-              if (lower.includes("phone")) {
-                if (lower.includes("label")) {
-                  const base = key.replace(/label/i, "value");
-                  if (row[base]) {
-                    const label = (row[key] || "other").toString().toLowerCase().trim();
-                    contactObj.phone[label] = row[base];
-                  }
-                } else if (lower.includes("value") && !Object.keys(contactObj.phone).length) {
-                  contactObj.phone.other = row[key];
-                }
+            for (let i = 1; i <= 5; i++) {
+              const labelKey = `Phone ${i} - Label`;
+              const valueKey = `Phone ${i} - Value`;
+
+              if (row[valueKey]) {
+                const label = (row[labelKey] || "other").toString().toLowerCase().trim();
+                contactObj.phone[label] = row[valueKey];
               }
             }
+
 
             // --- Address (flatten all parts into one string) ---
             const addressParts = [];

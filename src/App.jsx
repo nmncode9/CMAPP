@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import './App.css';
 import UploadScreen from './components/UploadScreen';
-import DataTable from "./components/DataTable.jsx";
+import ContactsPage from "./components/ContactsPage";
 
 
 const router = createBrowserRouter([
@@ -11,7 +11,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/contacts",
-    element: <DataTable />
+    element: <ContactsPage />
   }
 ]);
 
