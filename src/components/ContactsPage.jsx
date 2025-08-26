@@ -1,6 +1,7 @@
 import { useState } from "react";
 import DataTable from "./DataTable";
 import Filters from "./Filters";
+import ContactModal from "./ContactModal";
 
 export default function ContactsPage() {
 
@@ -10,6 +11,7 @@ export default function ContactsPage() {
     <main className="max-w-[1100px] mx-auto">
       <Filters filters={filters} setFilters={setFilters}/>
       <DataTable filters={filters} />
+      <ContactModal />
     </main>
   )
 }

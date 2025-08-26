@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
 import * as XLSX from "xlsx";
 
-export const useContactsStore = create((set) => ({
+export const useContactsStore = create((set, get) => ({
   rawFiles: [],
   contacts: [],
   setContacts: (contacts) => set({ contacts }),
@@ -111,4 +111,20 @@ export const useContactsStore = create((set) => ({
       reader.readAsArrayBuffer(file);
     });
   },
+  modal: { isOpen: false, mode: "view", contactId: null },
+  openModal: (contactId, mode = "view") =>
+    set({ modal: { ...get().modal, isOpen: true, mode, contactId } }),
+  closeModal: () =>
+    set({ modal: { isOpen: false, mode: "view", contactId: null } }),
+  setModalMode: (mode) =>
+    set((state) => ({ modal: { ...state.modal, mode } })),
+
+
+  updateContact: (id, updates) =>
+    set((state) => ({
+      contacts: state.contacts.map((c) =>
+        c.id === id ? updates : c
+      ),
+      modal: { ...state.modal, contact: updates },
+    })),
 }));

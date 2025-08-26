@@ -1,5 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useContactsStore } from "@/stores/contactsStore";
 
 const columnHelper = createColumnHelper();
 
@@ -97,12 +98,17 @@ export const columns = [
   columnHelper.display({
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => (
-      <div className="opacity-0 group-hover:opacity-100 flex gap-2">
-        <button title="View">👁️</button>
-        <button title="Edit">✏️</button>
+    cell: ({ row }) => {
+      const openModal = useContactsStore((s) => s.openModal);
+      const contact = row.original;
+
+      return (
+        <div className="opacity-0 group-hover:opacity-100 flex gap-2">
+        <button title="View" onClick={() => openModal(contact.id, "view")} >👁️</button>
+        <button title="Edit" onClick={() => openModal(contact.id, "edit")}>✏️</button>
         <button title="Delete">🗑️</button>
       </div>
-    ),
+      )
+    },
   }),
 ];
