@@ -5,7 +5,7 @@ export default function PaginationControls({ table, totalRows }) {
   const { pagination } = table.getState();
 
   return (
-    <div className="flex justify-between">
+    <div className="flex justify-between items-baseline px-10 py-2">
       {/* Rows per page selector */}
       <div className="flex items-baseline space-x-2 py-4">
         <span>Rows per page:</span>

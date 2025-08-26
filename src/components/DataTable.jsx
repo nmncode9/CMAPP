@@ -99,60 +99,62 @@ export default function DataTable({filters}) {
   );
 
   return (
-    <div className="overflow-hidden rounded-md border">
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                const canSort = header.column.getCanSort();
+    <div>
+      <div className="overflow-hidden rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  const canSort = header.column.getCanSort();
 
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder ? null : canSort ? (
-                      <button
-                        onClick={header.column.getToggleSortingHandler()}
-                        className="flex items-center gap-1"
-                      >
-                        {flexRender(header.column.columnDef.header, header.getContext())}
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder ? null : canSort ? (
+                        <button
+                          onClick={header.column.getToggleSortingHandler()}
+                          className="flex items-center gap-1"
+                        >
+                          {flexRender(header.column.columnDef.header, header.getContext())}
 
-                        {header.column.getIsSorted() === "asc" && <ArrowUpIcon />}
-                        {header.column.getIsSorted() === "desc" && <ArrowDownIcon />}
-                      </button>
-                    ) : (
-                      flexRender(header.column.columnDef.header, header.getContext())
-                    )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                className="group"
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+                          {header.column.getIsSorted() === "asc" && <ArrowUpIcon />}
+                          {header.column.getIsSorted() === "desc" && <ArrowDownIcon />}
+                        </button>
+                      ) : (
+                        flexRender(header.column.columnDef.header, header.getContext())
+                      )}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-      <PaginationControls table={table} totalRows={rows.length}/>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className="group"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      <PaginationControls table={table} totalRows={rows.length} />
     </div>
   );
 }
