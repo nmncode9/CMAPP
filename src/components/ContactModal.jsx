@@ -7,6 +7,14 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useContactsStore } from "@/stores/contactsStore";
 import { useState, useEffect } from "react";
 
@@ -18,7 +26,6 @@ export default function ContactModal() {
   const { isOpen, mode, contactId } = modal;
 
   const contact = contacts.find((c) => c.id === contactId);
-
   const [formData, setFormData] = useState(contact || {});
 
   useEffect(() => {
@@ -26,25 +33,43 @@ export default function ContactModal() {
   }, [contactId, contacts]);
 
   if (!contact || !formData) return null;
-
   const isView = mode === "view";
 
   function handleChange(field, value) {
-    setFormData((prev) => ({ ...prev, [field]: value || "" }));
+    setFormData(prev => ({ ...prev, [field]: value || "" }));
+  }
+
+  // Rename key if type changes
+  function handleTypeChange(group, oldType, newType) {
+    if (!newType || oldType === newType) return;
+    setFormData(prev => {
+      const updatedGroup = { ...prev[group] };
+      updatedGroup[newType] = updatedGroup[oldType];
+      delete updatedGroup[oldType];
+      return { ...prev, [group]: updatedGroup };
+    });
   }
 
   function handleNestedChange(group, type, value) {
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       [group]: { ...prev[group], [type]: value || "" },
     }));
   }
 
   function addField(group, type = "New") {
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       [group]: { ...prev[group], [type]: "" },
     }));
+  }
+
+  function deleteField(group, type) {
+    setFormData(prev => {
+      const updatedGroup = { ...prev[group] };
+      delete updatedGroup[type];
+      return { ...prev, [group]: updatedGroup };
+    });
   }
 
   function handleSave() {
@@ -52,7 +77,6 @@ export default function ContactModal() {
     closeModal();
   }
 
-  // Dynamically get top-level string fields, exclude objects and id
   const topLevelFields = Object.entries(formData).filter(
     ([key, value]) => typeof value === "string" && key !== "id" && key !== "sourceFile"
   );
@@ -80,22 +104,38 @@ export default function ContactModal() {
           {/* Emails */}
           <div>
             <label className="block text-sm font-medium mb-1">Emails</label>
-            {formData.email && Object.entries(formData.email).map(([type, value]) => (
+            {(formData.email ? Object.entries(formData.email) : []).map(([type, value]) => (
               <div key={type} className="flex items-center gap-2 mb-2">
-                <select
+                <Select
                   value={type}
                   disabled={isView}
-                  onChange={(e) => handleNestedChange("email", e.target.value, formData.email[type] || "")}
+                  onValueChange={(newType) => handleTypeChange("email", type, newType)}
                 >
-                  {EMAIL_TYPES.map((opt) => (
-                    <option key={opt} value={opt}>{opt}</option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-[120px]">
+                    <SelectValue placeholder="Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {EMAIL_TYPES.map(opt => (
+                        <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
                 <Input
                   value={value || ""}
                   onChange={(e) => handleNestedChange("email", type, e.target.value)}
                   disabled={isView}
                 />
+                {!isView && value && (
+                  <button
+                    type="button"
+                    className="text-red-500"
+                    onClick={() => deleteField("email", type)}
+                  >
+                    🗑️
+                  </button>
+                )}
               </div>
             ))}
             {!isView && <Button size="sm" onClick={() => addField("email")}>+ Add Email</Button>}
@@ -104,22 +144,38 @@ export default function ContactModal() {
           {/* Phones */}
           <div>
             <label className="block text-sm font-medium mb-1">Phones</label>
-            {formData.phone && Object.entries(formData.phone).map(([type, value]) => (
+            {(formData.phone ? Object.entries(formData.phone) : []).map(([type, value]) => (
               <div key={type} className="flex items-center gap-2 mb-2">
-                <select
+                <Select
                   value={type}
                   disabled={isView}
-                  onChange={(e) => handleNestedChange("phone", e.target.value, formData.phone[type] || "")}
+                  onValueChange={(newType) => handleTypeChange("phone", type, newType)}
                 >
-                  {PHONE_TYPES.map((opt) => (
-                    <option key={opt} value={opt}>{opt}</option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-[120px]">
+                    <SelectValue placeholder="Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {PHONE_TYPES.map(opt => (
+                        <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
                 <Input
                   value={value || ""}
                   onChange={(e) => handleNestedChange("phone", type, e.target.value)}
                   disabled={isView}
                 />
+                {!isView && value && (
+                  <button
+                    type="button"
+                    className="text-red-500"
+                    onClick={() => deleteField("phone", type)}
+                  >
+                    ❌
+                  </button>
+                )}
               </div>
             ))}
             {!isView && <Button size="sm" onClick={() => addField("phone")}>+ Add Phone</Button>}

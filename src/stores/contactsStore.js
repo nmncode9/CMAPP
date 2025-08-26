@@ -57,11 +57,14 @@ export const useContactsStore = create((set, get) => ({
                 if (lower.includes("label")) {
                   const base = key.replace(/label/i, "value");
                   if (row[base]) {
-                    const label = (row[key] || "other").toString().toLowerCase().trim();
+                    // clean the label: remove special chars, trim spaces, fallback to "Other"
+                    let label = (row[key] || "Other").toString().replace(/^[\*\s]+/, "").trim();
+                    if (!label) label = "Other";
+                    label = label.charAt(0).toUpperCase() + label.slice(1); // capitalize first letter
                     contactObj.email[label] = row[base];
                   }
                 } else if (lower.includes("value") && !Object.keys(contactObj.email).length) {
-                  contactObj.email.other = row[key];
+                  contactObj.email["Other"] = row[key];
                 }
               }
             }
@@ -72,7 +75,10 @@ export const useContactsStore = create((set, get) => ({
               const valueKey = `Phone ${i} - Value`;
 
               if (row[valueKey]) {
-                const label = (row[labelKey] || "other").toString().toLowerCase().trim();
+                // clean the label: remove special chars, trim spaces, fallback to "Mobile"
+                let label = (row[labelKey] || "Mobile").toString().replace(/^[\*\s]+/, "").trim();
+                if (!label) label = "Mobile";
+                label = label.charAt(0).toUpperCase() + label.slice(1); // capitalize first letter
                 contactObj.phone[label] = row[valueKey];
               }
             }
