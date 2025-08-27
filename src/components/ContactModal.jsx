@@ -133,7 +133,7 @@ export default function ContactModal() {
                     className="text-red-500"
                     onClick={() => deleteField("email", type)}
                   >
-                    🗑️
+                    ❌
                   </button>
                 )}
               </div>
