@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 import {
   flexRender,
@@ -23,7 +23,7 @@ import { columns } from "@/components/Columns";
 import { useContactsStore } from "@/stores/contactsStore";
 import PaginationControls from "./PaginationControls";
 
-export default function DataTable({filters}) {
+export default function DataTable({filters, setTableInstance}) {
   
   const rows = useContactsStore((state) => state.contacts) || [];
 
@@ -86,6 +86,11 @@ export default function DataTable({filters}) {
     onSortingChange: setSorting,
   });
 
+  // Lift table instance up
+  useEffect(() => {
+    setTableInstance?.(table);
+  }, [table, setTableInstance]);
+
   const ArrowUpIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-3">
       <path fillRule="evenodd" d="M11.47 2.47a.75.75 0 0 1 1.06 0l3.75 3.75a.75.75 0 0 1-1.06 1.06l-2.47-2.47V21a.75.75 0 0 1-1.5 0V4.81L8.78 7.28a.75.75 0 0 1-1.06-1.06l3.75-3.75Z" clipRule="evenodd" />
@@ -102,7 +107,7 @@ export default function DataTable({filters}) {
     <div>
       <div className="overflow-hidden rounded-md border">
         <Table>
-          <TableHeader>
+          <TableHeader className="sticky top-0">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
