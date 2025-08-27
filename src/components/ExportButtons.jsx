@@ -1,8 +1,14 @@
-import { Button } from "./ui/button";
+import { useState } from "react";
 import { writeFile, utils } from "xlsx";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useContactsStore } from "@/stores/contactsStore"; 
 
 export default function ExportButtons({ table }) {
   if (!table) return null;
+
+  const contacts = useContactsStore((s) => s.contacts); // full list from store
+  const [selectedFormat, setSelectedFormat] = useState(""); 
+  const [allFormat, setAllFormat] = useState(""); 
 
   const BASE_COLUMNS = [
     "First Name","Middle Name","Last Name","Phonetic First Name","Phonetic Middle Name","Phonetic Last Name","Name Prefix","Name Suffix",
@@ -15,7 +21,6 @@ export default function ExportButtons({ table }) {
   const transformRow = (row) => {
     const [firstName, ...lastParts] = row.name?.split(" ") || [];
     const lastName = lastParts.join(" ");
-
     const emails = Object.entries(row.email || {});
     const phones = Object.entries(row.phone || {});
 
@@ -26,13 +31,11 @@ export default function ExportButtons({ table }) {
       "Address 1 - Formatted": row.address || "",
     };
 
-    // add emails
     emails.forEach(([type, value], i) => {
       data[`E-mail ${i + 1} - Label`] = type;
       data[`E-mail ${i + 1} - Value`] = value;
     });
 
-    // add phones
     phones.forEach(([type, value], i) => {
       data[`Phone ${i + 1} - Label`] = type;
       data[`Phone ${i + 1} - Value`] = value;
@@ -41,31 +44,54 @@ export default function ExportButtons({ table }) {
     return data;
   };
 
-  const exportToCsv = (selectedOnly = false) => {
-    const rows = selectedOnly
-      ? table.getSelectedRowModel().rows
-      : table.getRowModel().rows;
-
-    const data = rows.map((r) => transformRow(r.original));
-
-    // dynamically include any extra email/phone columns beyond the base
+  const doExport = (rows, filename, format) => {
+    const data = rows.map(transformRow);
     const dynamicColumns = Array.from(
       new Set([
         ...BASE_COLUMNS,
         ...data.flatMap(d => Object.keys(d).filter(k => !BASE_COLUMNS.includes(k))),
       ])
     );
-
     const ws = utils.json_to_sheet(data, { header: dynamicColumns });
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, "Contacts");
-    writeFile(wb, selectedOnly ? "contacts-selected.xlsx" : "contacts-all.xlsx");
+    writeFile(wb, `${filename}.${format}`);
+  };
+
+  const exportSelected = (format) => {
+    const rows = table.getSelectedRowModel().rows.map(r => r.original);
+    doExport(rows, "contacts-selected", format);
+    setSelectedFormat(""); // reset dropdown
+  };
+
+  const exportAll = (format) => {
+    doExport(contacts, "contacts-all", format); // bypass table → use store
+    setAllFormat(""); // reset dropdown
   };
 
   return (
     <div className="flex gap-2 mb-4">
-      <Button onClick={() => exportToCsv(true)}>Export Selected</Button>
-      <Button onClick={() => exportToCsv(false)}>Export All</Button>
+      {/* Export Selected */}
+      <Select value={selectedFormat} onValueChange={exportSelected}>
+        <SelectTrigger className="w-40">
+          <SelectValue placeholder="Export Selected" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="xlsx">XLS</SelectItem>
+          <SelectItem value="csv">CSV</SelectItem>
+        </SelectContent>
+      </Select>
+
+      {/* Export All */}
+      <Select value={allFormat} onValueChange={exportAll}>
+        <SelectTrigger className="w-40">
+          <SelectValue placeholder="Export All" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="xlsx">XLS</SelectItem>
+          <SelectItem value="csv">CSV</SelectItem>
+        </SelectContent>
+      </Select>
     </div>
   );
 }

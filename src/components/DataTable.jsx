@@ -72,6 +72,7 @@ export default function DataTable({filters, setTableInstance}) {
 
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 20 });
   const [sorting, setSorting] = useState([]);
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data: filteredRows,
@@ -79,8 +80,10 @@ export default function DataTable({filters, setTableInstance}) {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    onRowSelectionChange: setRowSelection, 
+    enableRowSelection: true,
     state: {
-      pagination, sorting
+      pagination, sorting, rowSelection
     },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
