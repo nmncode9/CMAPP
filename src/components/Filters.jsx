@@ -1,4 +1,6 @@
 import { Button } from "./ui/button";
+import { useCallback } from "react";
+import debounce from 'lodash.debounce';
 
 export default function Filters({filters, setFilters}) {
 
@@ -20,6 +22,7 @@ export default function Filters({filters, setFilters}) {
         type="text"
         name="name"
         placeholder="Name"
+        aria-label="Filter by name"
         className="border-2 rounded-md p-1 pl-2"
         value={filters.name}
         onChange={handleChange} />
@@ -27,6 +30,7 @@ export default function Filters({filters, setFilters}) {
         type="text"
         name="email"
         placeholder="Email"
+        aria-label="Filter by email"
         className="border-2 rounded-md p-1 pl-2"
         value={filters.email}
         onChange={handleChange} />
@@ -34,6 +38,7 @@ export default function Filters({filters, setFilters}) {
         type="text"
         name="phone"
         placeholder="Phone Number"
+        aria-label="Filter by phone number"
         className="border-2 rounded-md p-1 pl-2"
         value={filters.phone}
         onChange={handleChange} />
@@ -41,6 +46,7 @@ export default function Filters({filters, setFilters}) {
         type="text"
         name="company"
         placeholder="Company"
+        aria-label="Filter by company"
         className="border-2 rounded-md p-1 pl-2"
         value={filters.company}
         onChange={handleChange} />
@@ -48,6 +54,7 @@ export default function Filters({filters, setFilters}) {
         type="text"
         name="type"
         placeholder="Contact type"
+        aria-label="Filter by contact type"
         className="border-2 rounded-md p-1 pl-2"
         value={filters.type}
         onChange={handleChange} />

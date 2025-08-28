@@ -22,7 +22,7 @@ const EMAIL_TYPES = ["Home", "Work", "Other"];
 const PHONE_TYPES = ["Mobile", "Home", "Work", "Main", "Work Fax", "Home Fax", "Pager", "Other"];
 
 export default function ContactModal() {
-  const { modal, closeModal, setModalMode, updateContact, contacts } = useContactsStore();
+  const { modal, closeModal, setModalMode, updateContact, deleteContact,contacts } = useContactsStore();
   const { isOpen, mode, contactId } = modal;
 
   const contact = contacts.find((c) => c.id === contactId);
@@ -130,10 +130,11 @@ export default function ContactModal() {
                 {!isView && value && (
                   <button
                     type="button"
-                    className="text-red-500"
                     onClick={() => deleteField("email", type)}
                   >
-                    ❌
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-4">
+                      <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
+                    </svg>
                   </button>
                 )}
               </div>
@@ -170,10 +171,11 @@ export default function ContactModal() {
                 {!isView && value && (
                   <button
                     type="button"
-                    className="text-red-500"
                     onClick={() => deleteField("phone", type)}
                   >
-                    ❌
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-4">
+                      <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
+                    </svg>
                   </button>
                 )}
               </div>
@@ -192,6 +194,7 @@ export default function ContactModal() {
             {isView ? "Switch to Edit" : "Switch to View"}
           </Button>
           {!isView && <Button onClick={handleSave}>Save</Button>}
+          {!isView && <Button variant="destructive" onClick={() => deleteContact(modal.contactId)}>Delete</Button>}
         </DialogFooter>
       </DialogContent>
     </Dialog>

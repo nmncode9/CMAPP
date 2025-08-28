@@ -133,4 +133,25 @@ export const useContactsStore = create((set, get) => ({
       ),
       modal: { ...state.modal, contact: updates },
     })),
+  deleteContact: (id) =>
+    set((state) => ({
+      contacts: state.contacts.filter(contact => contact.id !== id)
+    })),
+  addNewContact: () => {
+    const newContact = {
+      id: uuidv4(),
+      name: "",
+      email: {},
+      phone: {},
+      address: "",
+      company: "",
+      sourceFile: "Created via app",
+    };
+
+    set((state) => ({
+      contacts: [...state.contacts, newContact],
+      modal: { isOpen: true, mode: "edit", contactId: newContact.id },
+    }));
+  },
+  
 }));
