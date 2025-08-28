@@ -1,6 +1,4 @@
 import { Button } from "./ui/button";
-import { useCallback } from "react";
-import debounce from 'lodash.debounce';
 
 export default function Filters({filters, setFilters}) {
 
