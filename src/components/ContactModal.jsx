@@ -83,7 +83,7 @@ export default function ContactModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={closeModal}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg max-h-[91vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{isView ? "View Contact" : "Edit Contact"}</DialogTitle>
         </DialogHeader>
