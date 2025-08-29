@@ -92,7 +92,7 @@ export default function ExportButtons({ table }) {
   };
 
   return (
-    <div className="flex gap-2 mb-4">
+    <div className="flex gap-2">
       {/* Export Selected */}
       <Select
         value={selectedExport}

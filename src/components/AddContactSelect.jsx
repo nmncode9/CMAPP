@@ -37,9 +37,9 @@ export default function AddContactSelect() {
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="Add Contact">Add Contact</SelectItem>
-        <SelectItem value="add">Add Contact</SelectItem>
-        <SelectItem value="upload">Upload List</SelectItem>
+        <SelectItem value="Add Contact">Add Contacts</SelectItem>
+        <SelectItem value="add">Add a Contact</SelectItem>
+        <SelectItem value="upload">Upload a List</SelectItem>
       </SelectContent>
     </Select>
   );

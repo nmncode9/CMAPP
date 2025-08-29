@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-
 import {
   flexRender,
   getCoreRowModel,
@@ -23,51 +22,22 @@ import { columns } from "@/components/Columns";
 import { useContactsStore } from "@/stores/contactsStore";
 import PaginationControls from "./PaginationControls";
 
-export default function DataTable({filters, setTableInstance}) {
-  
+export default function DataTable({ filters, setTableInstance }) {
   const rows = useContactsStore((state) => state.contacts) || [];
 
-  // --- helpers for matching ---
-  const toText = (v) => (v ?? "").toString().toLowerCase().trim();
-  const digitsOnly = (v) => (v ?? "").toString().replace(/\D+/g, "");
-
-  const matchName = (row, q) =>
-    !q || toText(row.name).includes(toText(q));
-
-  const matchCompany = (row, q) =>
-    !q || toText(row.company).includes(toText(q));
-
-  const matchEmail = (row, q) => {
-    if (!q) return true;
-    const needle = toText(q);
-    const values = Object.values(row.email || {});
-    return values.some((val) => toText(val).includes(needle));
-  };
-
-  const matchPhone = (row, q) => {
-    if (!q) return true;
-    const needle = digitsOnly(q);
-    if (!needle) return true; // if user typed non-digits only, don’t block results
-    const values = Object.values(row.phone || {});
-    return values.some((val) => digitsOnly(val).includes(needle));
-  };
-
-  // “type” means the label/key inside phone, e.g. mobile/work/home
-  const matchType = (row, q) => {
-    if (!q) return true;
-    const needle = toText(q);
-    const labels = Object.keys(row.phone || {});
-    return labels.some((label) => toText(label).includes(needle));
-  };
-
   const filteredRows = useMemo(() => {
-    return rows.filter((row) =>
-      matchName(row, filters?.name) &&
-      matchEmail(row, filters?.email) &&
-      matchPhone(row, filters?.phone) &&
-      matchCompany(row, filters?.company) &&
-      matchType(row, filters?.type)
-    );
+    return rows.filter((row) => {
+      const toText = (v) => (v ?? "").toString().toLowerCase().trim();
+      const digitsOnly = (v) => (v ?? "").toString().replace(/\D+/g, "");
+
+      const matchName = !filters.name || toText(row.name).includes(toText(filters.name));
+      const matchCompany = !filters.company || toText(row.company).includes(toText(filters.company));
+      const matchEmail = !filters.email || Object.values(row.email || {}).some((v) => toText(v).includes(toText(filters.email)));
+      const matchPhone = !filters.phone || Object.values(row.phone || {}).some((v) => digitsOnly(v).includes(digitsOnly(filters.phone)));
+      const matchType = !filters.type || Object.keys(row.phone || {}).some((k) => toText(k).includes(toText(filters.type)));
+
+      return matchName && matchCompany && matchEmail && matchPhone && matchType;
+    });
   }, [rows, filters]);
 
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 20 });
@@ -80,16 +50,13 @@ export default function DataTable({filters, setTableInstance}) {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    onRowSelectionChange: setRowSelection, 
+    onRowSelectionChange: setRowSelection,
     enableRowSelection: true,
-    state: {
-      pagination, sorting, rowSelection
-    },
+    state: { pagination, sorting, rowSelection },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
   });
 
-  // Lift table instance up
   useEffect(() => {
     setTableInstance?.(table);
   }, [table, setTableInstance]);
@@ -107,30 +74,36 @@ export default function DataTable({filters, setTableInstance}) {
   );
 
   return (
-    <div>
+    <div className="w-full overflow-x-auto md:overflow-x-visible">
       <div className="overflow-hidden rounded-md border">
-        <Table>
-          <TableHeader className="sticky top-0">
+        <Table className="table-fixed w-full min-w-[700px]">
+          <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   const canSort = header.column.getCanSort();
+                  const hideOnMobile = header.column.columnDef.meta?.hideOnMobile;
 
                   return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : canSort ? (
-                        <button
-                          onClick={header.column.getToggleSortingHandler()}
-                          className="flex items-center gap-1"
-                        >
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-
-                          {header.column.getIsSorted() === "asc" && <ArrowUpIcon />}
-                          {header.column.getIsSorted() === "desc" && <ArrowDownIcon />}
-                        </button>
-                      ) : (
-                        flexRender(header.column.columnDef.header, header.getContext())
-                      )}
+                    <TableHead
+                      key={header.id}
+                      className={`${hideOnMobile ? "hidden md:table-cell" : "truncate"} text-ellipsis overflow-hidden`}
+                      style={{ width: header.column.columnDef.size, maxWidth: header.column.columnDef.size }}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : canSort
+                        ? (
+                          <button
+                            onClick={header.column.getToggleSortingHandler()}
+                            className="flex items-center gap-1 truncate"
+                          >
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                            {header.column.getIsSorted() === "asc" && <ArrowUpIcon />}
+                            {header.column.getIsSorted() === "desc" && <ArrowDownIcon />}
+                          </button>
+                        )
+                        : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   );
                 })}
@@ -143,13 +116,21 @@ export default function DataTable({filters, setTableInstance}) {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="group"
+                  className="group cursor-pointer"
+                  onClick={() => useContactsStore.getState().openModal(row.original.id, "view")}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell) => {
+                    const hideOnMobile = cell.column.columnDef.meta?.hideOnMobile;
+                    return (
+                      <TableCell
+                        key={cell.id}
+                        className={`${hideOnMobile ? "hidden md:table-cell" : "truncate"} text-ellipsis overflow-hidden whitespace-nowrap`}
+                        style={{ width: cell.column.columnDef.size, maxWidth: cell.column.columnDef.size }}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    );
+                  })}
                 </TableRow>
               ))
             ) : (

@@ -16,11 +16,11 @@ export default function ContactsPage() {
 
   
   return (
-    <main className="max-w-[1100px] mx-auto ">
+    <main className="max-w-[1100px] mx-4 md:mx-8 lg:mx-12 xl:mx-auto ">
       <Filters filters={filters} setFilters={setFilters} />
-      <div className="flex justify-between">
+      <div className="flex justify-between flex-wrap mb-2 space-y-2">
         <ExportButtons table={tableInstance} />
-        <div className="flex space-x-2 items-stretch">
+        <div className="flex space-x-2 ">
           <AddContactSelect />
           <UndoRedo />
         </div>

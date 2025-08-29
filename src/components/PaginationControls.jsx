@@ -5,9 +5,9 @@ export default function PaginationControls({ table, totalRows }) {
   const { pagination } = table.getState();
 
   return (
-    <div className="flex justify-between items-baseline px-10 py-2">
+    <div className="flex flex-col-reverse md:flex-row justify-end md:justify-between items-start md:items-center gap-2 px-0 sm:px-10 pt-8 pb-16">
       {/* Rows per page selector */}
-      <div className="flex items-baseline space-x-2 py-4">
+      <div className="flex items-center space-x-2">
         <span>Rows per page:</span>
         <select
           value={pagination.pageSize}
@@ -28,7 +28,7 @@ export default function PaginationControls({ table, totalRows }) {
       </div>
 
       {/* Pagination buttons and range */}
-      <div className="flex items-baseline justify-end space-x-2 py-4">
+      <div className="flex items-baseline justify-end flex-wrap gap-2">
         <PaginationRange
           pageIndex={pagination.pageIndex}
           pageSize={pagination.pageSize}
