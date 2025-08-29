@@ -37,7 +37,7 @@ export default function UploadScreen() {
           A free and open source contact manager app
         </h1>
         <p className="max-w-[890px] font-[500] text-xl text-left mb-16">
-          CMAPP, short for Contact Manager App, is a lightweight tool to merge, split, convert and batch modify contacts. To get started, import your contacts from your phone or Gmail. CMAPP supports csv and vCard formats. Your data is processed client-side. This means that your data is processed through the browser and nothing is sent to any remote server.
+          CMAPP, short for Contact Manager App, is a lightweight tool to merge, split, convert and batch modify contacts. To get started, import your contacts from your phone or Gmail. CMAPP supports csv and XLS formats. Your data is processed client-side. This means that your data is processed privately through your browser, ensuring nothing is sent to any remote server.
         </p>
 
         <div className="flex flex-col md:flex-row md:space-x-2 space-y-2 md:space-y-0 items-center">
