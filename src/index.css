@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./App.css";
 
 @font-face {
   font-family: "NeutralSans";
@@ -28,15 +29,20 @@
   font-style: normal;
 }
 
-@theme {
-  --font-sans: "NeutralSans", system-ui, sans-serif;
+:root {
+  /* --font-sans: "NeutralSans", system-ui, sans-serif; */
   
-  --color-danger: #ff4757;          /* Watermelon */
-  --color-primary: #3742fa;         /* Bright Greek */
-  --color-warning: #ffa502;         /* Orange */
-  --color-secondary: #70a1ff;       /* French Sky Blue */
-  --color-success: #2ed573;         /* UFO Green */
-  --color-neutral-dark: #2f3542;    /* Prestige Blue */
-  --color-neutral-light: #57606f;   /* Grisaille */
-  --color-faded-gray: #a4b0be;      /* Peace */
+  --danger: #ff4757;          /* Watermelon */
+  --primary: #3742fa;         /* Bright Greek */
+  --warning: #ffa502;         /* Orange */
+  --secondary: #70a1ff;       /* French Sky Blue */
+  --success: #2ed573;         /* UFO Green */
+  --neutral-dark: #2f3542;    /* Prestige Blue */
+  --neutral-light: #57606f;   /* Grisaille */
+  --faded-gray: #a4b0be;      /* Peace */
+
+  --muted-foreground: var(--faded-gray);
+  --foreground: var(--neutral-dark);
+  --destructive: var(--danger);
+
 }

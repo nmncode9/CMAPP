@@ -15,11 +15,11 @@ export default function UndoRedo() {
     <div className="flex space-x-2 pt-2">
       <Undo
         onClick={undo}
-        className={`cursor-pointer ${undoDisabled ? "text-gray-300 cursor-not-allowed" : "text-black"}`}
+        className={`cursor-pointer ${undoDisabled ? "text-muted-foreground cursor-not-allowed" : "text-foreground"}`}
       />
       <Redo
         onClick={redo}
-        className={`cursor-pointer ${redoDisabled ? "text-gray-300 cursor-not-allowed" : "text-black"}`}
+        className={`cursor-pointer ${redoDisabled ? "text-muted-foreground cursor-not-allowed" : "text-foreground"}`}
       />
     </div>
   );
